@@ -1,27 +1,35 @@
-
-
 <?php
+      session_start();
+
       $title = 'Login';
+      include('config.php');
       include('header.php');
       require_once('functions.php');
 
-      /*
-      //POST방식으로 넘어온 값 중 이메일 확인
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-          //echo $_POST['email'];
-          output($_POST);
+/*
+      //관리자로 로그인되어있다면
+      if(is_user_authenticated()){
+          redirect('admin.php');
+          die();
       }
-      */
+*/
       //POST방식으로 넘어온 값중에 로그인 변수 값 존재할
       if(isset($_POST['login'])){
         //output($_POST);
         //이메일 형식인지 확인
         $email =filter_input(INPUT_POST,'email',FILTER_VALIDATE_EMAIL);
+        $password = $_POST['password'];
         if($email == false){
             $status = '이메일 형식에 맞게 입력해주세요';
 
         }
+        if(authenticate_user($email,$password)){
+           $_SESSION['email'] = $email;
+           redirect('admin.php');
+
+       }else{
+         $status ='비번이 맞지 않습니다.';
+       }
       }
 
 ?>
